@@ -1,0 +1,44 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+    id 'com.google.gms.google-services'
+}
+
+android {
+    namespace = "com.example.digitalbharat"
+    compileSdkVersion 34 // Explicitly set the compile SDK version
+    ndkVersion = "25.2.9519653" // Optional: Specify the NDK version if needed
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    defaultConfig {
+        applicationId "com.example.digitalbharat"
+        minSdkVersion 21 // Explicitly set the minimum SDK version
+        targetSdkVersion 33 // Explicitly set the target SDK version
+        versionCode 1 // Set an initial version code
+        versionName "1.0" // Set an initial version name
+    }
+
+    buildTypes {
+        release {
+            // Configure signing for release builds if necessary
+            signingConfig = signingConfigs.debug // Temporary debug signing
+        }
+    }
+}
+
+flutter {
+    source = "../.." // Path to the Flutter module
+}
+
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:33.8.0')
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "408636439453",
+    "project_id": "digital-bharat-crieya",
+    "storage_bucket": "digital-bharat-crieya.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:408636439453:android:6d89a68d3085aa04740d74",
+        "android_client_info": {
+          "package_name": "com.example.digitalbharat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRousrx29A0_bkybwAtAZuT6c7WRB4ppk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
