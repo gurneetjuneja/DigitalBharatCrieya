@@ -7,7 +7,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:8.2.2' // Use a version that supports API 34 // Use Gradle Plugin compatible with Flutter
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms.google-services:4.4.1'
+        classpath 'com.google.gms:google-services:4.4.2'
     }
 }
 

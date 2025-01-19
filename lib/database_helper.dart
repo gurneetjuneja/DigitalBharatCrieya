@@ -1,7 +1,7 @@
 import 'dart:math'; // For generating random statuses
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path_provider/path_provider.dart'; // Importing to get writable directory
+import 'package:path_provider/path_provider.dart'; // For writable directory
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -22,14 +22,17 @@ class DatabaseHelper {
 
   // Initialize the database
   Future<Database> _initDatabase() async {
-    final directory = await getApplicationDocumentsDirectory(); // Getting writable directory
-    final path = join(directory.path, 'lodge_data.db'); // Using path to the writable directory
+    final directory = await getApplicationDocumentsDirectory();
+    final path = join(directory.path, 'lodge_data.db');
 
     return await openDatabase(
       path,
-      version: 2, // Increment version for schema changes
+      version: 2,
+      onOpen: (db) {
+        print("Database opened successfully: $path");
+      },
       onCreate: (db, version) async {
-        await db.execute(''' 
+        await db.execute('''
           CREATE TABLE lodge_data (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             image_path TEXT,
@@ -57,20 +60,44 @@ class DatabaseHelper {
   Future<void> insertLodgeData(Map<String, dynamic> data) async {
     final db = await database;
 
-    // Ensuring required fields are not empty or null
-    data['status'] = data['status'] ?? _generateRandomStatus();
-    data['location'] = data['location'] ?? '';
-    data['floor'] = data['floor'] ?? '';
-    data['room'] = data['room'] ?? '';
-    data['note'] = data['note'] ?? '';
+    // Validate image_path
+    if (data['image_path'] == null || data['image_path'].toString().isEmpty) {
+      print("Error: Invalid image_path: ${data['image_path']}");
+      throw Exception("image_path is missing or invalid. Data not inserted.");
+    }
 
+    // Validate other required fields
+    data['status'] = data['status'] ?? _generateRandomStatus(); // Default status
+    data['location'] = data['location'] ?? 'Unknown';          // Default location
+    data['floor'] = data['floor'] ?? 'Unknown';                // Default floor
+    data['room'] = data['room'] ?? 'Unknown';                  // Default room
+    data['note'] = data['note'] ?? '';                         // Default note
+
+    // Log the validated data for debugging
+    print("Validated data for insertion: $data");
+
+    // Insert into the database
     await db.insert('lodge_data', data, conflictAlgorithm: ConflictAlgorithm.replace);
+    print("Data inserted successfully.");
   }
 
   // Fetch all data from the lodge_data table
   Future<List<Map<String, dynamic>>> getAllLodgeData() async {
     final db = await database;
-    return await db.query('lodge_data', orderBy: 'date DESC'); // Sorting by date
+    final data = await db.query('lodge_data', orderBy: 'date DESC');
+
+    // Filter out entries with invalid image paths
+    final validData = data.where((entry) {
+      final imagePath = entry['image_path']?.toString() ?? '';
+      if (imagePath.isEmpty || !imagePath.startsWith('/data/')) {
+        print("Invalid image path found: $imagePath");
+        return false; // Exclude invalid entries
+      }
+      return true;
+    }).toList();
+
+    print("Fetched valid data: $validData");
+    return validData;
   }
 
   // Fetch specific data by ID
@@ -87,11 +114,16 @@ class DatabaseHelper {
   // Update data in the lodge_data table
   Future<void> updateLodgeData(int id, Map<String, dynamic> updatedData) async {
     final db = await database;
-    // Ensure all fields are updated correctly
+
+    // Validate updated fields
+    if (updatedData['image_path'] == null || updatedData['image_path'].toString().isEmpty) {
+      print("Error: Invalid image_path in update: ${updatedData['image_path']}");
+      throw Exception("image_path is missing or invalid.");
+    }
     updatedData['status'] = updatedData['status'] ?? _generateRandomStatus();
-    updatedData['location'] = updatedData['location'] ?? '';
-    updatedData['floor'] = updatedData['floor'] ?? '';
-    updatedData['room'] = updatedData['room'] ?? '';
+    updatedData['location'] = updatedData['location'] ?? 'Unknown';
+    updatedData['floor'] = updatedData['floor'] ?? 'Unknown';
+    updatedData['room'] = updatedData['room'] ?? 'Unknown';
     updatedData['note'] = updatedData['note'] ?? '';
 
     await db.update(
@@ -101,6 +133,7 @@ class DatabaseHelper {
       whereArgs: [id],
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    print("Data updated successfully for ID: $id");
   }
 
   // Delete data from the lodge_data table
@@ -111,12 +144,14 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
+    print("Data deleted successfully for ID: $id");
   }
 
-  // Delete all data from the table (use with caution)
+  // Delete all data from the table
   Future<void> deleteAllLodgeData() async {
     final db = await database;
     await db.delete('lodge_data');
+    print("All data deleted successfully.");
   }
 
   // Fetch all distinct issue types for dropdown or filtering
