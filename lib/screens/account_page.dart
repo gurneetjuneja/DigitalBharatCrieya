@@ -1,10 +1,12 @@
+import 'package:digitalbharat/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../utils/colors.dart';
-import 'login.dart';
+import '../utils/colors.dart'; // Your colors file
 
 class AccountPage extends StatefulWidget {
-  const AccountPage({super.key});
+  final dynamic data; // Data passed from HomePage
+
+  const AccountPage({Key? key, this.data}) : super(key: key);
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -36,7 +38,7 @@ class _AccountPageState extends State<AccountPage> {
                 ),
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Close the dialog
               },
             ),
             TextButton(
@@ -47,12 +49,16 @@ class _AccountPageState extends State<AccountPage> {
                   color: Colors.red,
                 ),
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog
+
+                // Add your logout logic here (e.g., clear authentication data)
+
+                // Navigate back to the login page
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                      (Route<dynamic> route) => false,
+                  MaterialPageRoute(builder: (context) => LoginPage()), // Replace with your actual login page widget
+                      (route) => false, // Remove all previous routes to prevent going back to the account page
                 );
               },
             ),
@@ -66,6 +72,12 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+
+    // Retrieve the user data passed from the HomePage
+    var userData = widget.data;
+
+    // Log the user data to check what is passed
+    print(userData);
 
     return Scaffold(
       backgroundColor: kBackgroundColor,
@@ -101,20 +113,20 @@ class _AccountPageState extends State<AccountPage> {
             ),
             SizedBox(height: screenHeight * 0.03),
 
-            // Name
+            // Name (from userData, null-safe)
             Text(
-              'Sarah Matthews',
+              'Name: ${userData?['name'] ?? 'Not Available'}',  // Null-aware operator used
               style: GoogleFonts.poppins(
-                fontSize: screenWidth * 0.06,
-                fontWeight: FontWeight.bold,
+                fontSize: screenWidth * 0.05,
                 color: kPrimaryPurple,
+                fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: screenHeight * 0.01),
 
-            // ID
+            // Enrollment Number (from userData, null-safe)
             Text(
-              'MITU23BTIT0024',
+              userData?['enrollment'] ?? 'Enrollment Not Available',  // Null-aware operator used
               style: GoogleFonts.poppins(
                 fontSize: screenWidth * 0.05,
                 fontWeight: FontWeight.w600,
@@ -123,9 +135,9 @@ class _AccountPageState extends State<AccountPage> {
             ),
             SizedBox(height: screenHeight * 0.01),
 
-            // Department
+            // Department (from userData, null-safe)
             Text(
-              'School Of Computing - Information Technology',
+              userData?['institute'] ?? 'Institute Not Available',  // Null-aware operator used
               style: GoogleFonts.poppins(
                 fontSize: screenWidth * 0.05,
                 fontWeight: FontWeight.w500,
@@ -142,7 +154,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
               child: ElevatedButton(
                 onPressed: () {
-                  _showLogoutDialog(context);
+                  _showLogoutDialog(context); // Show logout confirmation dialog
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kPrimaryPurple,
@@ -162,6 +174,7 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                 ),
               ),
+
             ),
           ],
         ),

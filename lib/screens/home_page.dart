@@ -17,8 +17,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool _isAccountPageVisible = false;
 
-
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -137,9 +135,12 @@ class _HomePageState extends State<HomePage> {
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () {
+                    // Pass the received data to AccountPage
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const LodgeScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => AccountPage(data: widget.data), // Pass data here
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -218,7 +219,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                child: const AccountPage(),
+                child: AccountPage(data: widget.data), // Pass data here
               ),
             ),
           ),
