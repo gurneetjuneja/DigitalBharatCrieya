@@ -6,7 +6,9 @@ import 'lodge_screen.dart'; // Import the LodgeScreen
 import 'status_screen.dart'; // Import the ViewStatusScreen
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final dynamic data;  // The data received from the API
+
+  const HomePage({Key? key, this.data}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -14,6 +16,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _isAccountPageVisible = false;
+
+
 
   @override
   Widget build(BuildContext context) {
