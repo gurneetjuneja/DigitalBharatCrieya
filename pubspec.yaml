@@ -31,5 +31,6 @@ flutter:
   assets:
     - assets/mit_logo.png
     - assets/student.jpg
+    - assets/event_placeholder.jpg
   uses-material-design: true
 

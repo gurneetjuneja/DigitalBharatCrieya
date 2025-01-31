@@ -4,11 +4,12 @@ import 'package:digitalbharat/utils/colors.dart'; // Import your colors file
 import 'account_page.dart'; // Import the AccountPage
 import 'lodge_screen.dart'; // Import the LodgeScreen
 import 'status_screen.dart'; // Import the ViewStatusScreen
+import 'events.dart'; // Import the EventPage (Make sure this file exists)
 
 class HomePage extends StatefulWidget {
-  final dynamic data;  // The data received from the API
+  final dynamic data; // The data received from the API
 
-  const HomePage({Key? key, this.data}) : super(key: key);
+  const HomePage({Key? key, required this.data}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -135,11 +136,10 @@ class _HomePageState extends State<HomePage> {
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () {
-                    // Pass the received data to AccountPage
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AccountPage(data: widget.data), // Pass data here
+                        builder: (context) => const LodgeScreen(),
                       ),
                     );
                   },
@@ -167,7 +167,9 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ViewStatusScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => const ViewStatusScreen(),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -189,6 +191,36 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+                SizedBox(height: screenHeight * 0.03),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EventsPage(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kPrimaryPurple,
+                    padding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.02,
+                    ),
+                    minimumSize: Size(screenWidth * 0.85, screenHeight * 0.08),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    'Go to Event Page',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: screenWidth * 0.05,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+
                 const Spacer(),
               ],
             ),
@@ -219,7 +251,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                child: AccountPage(data: widget.data), // Pass data here
+                child: AccountPage(data: widget.data),
               ),
             ),
           ),
